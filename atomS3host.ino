@@ -4,9 +4,6 @@
 #include "USBHIDKeyboard.h"
 USBHIDKeyboard Keyboard;
 
-const int buttonPin = 41;
-int previousButtonState = HIGH;
-
 #define CARDKB_ADDR 0x5F
 #define SDA_PIN 2
 #define SCL_PIN 1
@@ -19,14 +16,11 @@ void setup() {
   Wire.begin(SDA_PIN, SCL_PIN);  // SDA, SCL ピンの指定（M5AtomS3 LiteのG1とG2ピン）
   Serial.begin(115200);
 
-  pinMode(buttonPin, INPUT_PULLUP);
   Keyboard.begin();
   USB.begin();
 }
 
 void loop() {
-  int buttonState = digitalRead(buttonPin);
-  if ((buttonState != previousButtonState) && (buttonState == LOW)) {
     Wire.requestFrom(CARDKB_ADDR, 1);
     while (Wire.available()) {
       char c = Wire.read();
@@ -36,7 +30,5 @@ void loop() {
         // キーボード入力に応じて追加の処理を行うことができます
       }
     }
-  }
-  previousButtonState = buttonState;
   delay(10);
 }
